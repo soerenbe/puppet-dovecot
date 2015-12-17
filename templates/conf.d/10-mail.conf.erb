@@ -117,6 +117,9 @@ namespace inbox {
   #list = children
 #}
 
+# Should shared INBOX be visible as "shared/user" or "shared/user/INBOX"?
+#mail_shared_explicit_inbox = no
+
 # System user and group used to access mails. If you use multiple, userdb
 # can override these by returning uid or gid fields. You can use either numbers
 # or names. <doc/wiki/UserIds.txt>
@@ -149,6 +152,10 @@ mail_privileged_group = <%= @mail_privileged_group %>
 # maildir and mboxes, allowing you to prefix mailboxes names with eg. /path/
 # or ~user/.
 #mail_full_filesystem_access = no
+
+# Dictionary for key=value mailbox attributes. Currently used by URLAUTH, but
+# soon intended to be used by METADATA as well.
+#mail_attribute_dict =
 
 ##
 ## Mail processes
@@ -259,6 +266,10 @@ mail_plugins = <%= @mail_plugins %>
 ## Mailbox handling optimizations
 ##
 
+# Mailbox list indexes can be used to optimize IMAP STATUS commands. They are
+# also required for IMAP NOTIFY extension to be enabled.
+#mailbox_list_index = no
+
 # The minimum number of mails in a mailbox before updates are done to cache
 # file. This allows optimizing Dovecot's behavior to do less disk writes at
 # the cost of more disk reads.
@@ -276,6 +287,24 @@ mail_plugins = <%= @mail_plugins %>
 # Also note that if other software reads the mboxes/maildirs, they may handle
 # the extra CRs wrong and cause problems.
 #mail_save_crlf = no
+
+# Max number of mails to keep open and prefetch to memory. This only works with
+# some mailbox formats and/or operating systems.
+#mail_prefetch_count = 0
+
+# How often to scan for stale temporary files and delete them (0 = never).
+# These should exist only after Dovecot dies in the middle of saving mails.
+#mail_temp_scan_interval = 1w
+
+# If enabled, Dovecot doesn't use the S=<size> in the Maildir filenames for
+# getting the mail's physical size, except when recalculating Maildir++ quota.
+# This can be useful in systems where a lot of the Maildir filenames have a
+# broken size. The performance hit for enabling this is very small.
+#maildir_broken_filename_sizes = no
+
+# Always move mails from new/ directory to cur/, even when the \Recent flags
+# aren't being reset.
+#maildir_empty_new = no
 
 ##
 ## Maildir-specific settings
@@ -314,9 +343,14 @@ mail_plugins = <%= @mail_plugins %>
 # in is important to avoid deadlocks if other MTAs/MUAs are using multiple
 # locking methods as well. Some operating systems don't allow using some of
 # them simultaneously.
+#
+# The Debian value for mbox_write_locks differs from upstream Dovecot. It is
+# changed to be compliant with Debian Policy (section 11.6) for NFS safety.
+#       Dovecot: mbox_write_locks = dotlock fcntl
+#       Debian:  mbox_write_locks = fcntl dotlock
+#
 #mbox_read_locks = fcntl
-#mbox_write_locks = dotlock fcntl
-mbox_write_locks = fcntl
+#mbox_write_locks = fcntl dotlock
 
 # Maximum time to wait for lock (all of them) before aborting.
 #mbox_lock_timeout = 5 mins
@@ -349,6 +383,12 @@ mbox_write_locks = fcntl
 # If mbox size is smaller than this (e.g. 100k), don't write index files.
 # If an index file already exists it's still read, just not updated.
 #mbox_min_index_size = 0
+
+# Mail header selection algorithm to use for MD5 POP3 UIDLs when
+# pop3_uidl_format=%m. For backwards compatibility we use apop3d inspired
+# algorithm, but it fails if the first Received: header isn't unique in all
+# mails. An alternative algorithm is "all" that selects all headers.
+#mbox_md5 = apop3d
 
 ##
 ## mdbox-specific settings

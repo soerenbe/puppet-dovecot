@@ -37,7 +37,7 @@ class dovecot (
     $mail_plugins               = undef,
     $mmap_disable               = undef,
     $dotlock_use_excl           = undef,
-    $include_inbox_namespace	= undef,
+    $include_inbox_namespace	  = undef,
     # 10-master.conf
     $default_process_limit      = undef,
     $default_client_limit       = undef,
@@ -110,6 +110,8 @@ class dovecot (
     $auth_sql_userdb_static     = undef,
     $auth_sql_path              = '/etc/dovecot/dovecot-sql.conf.ext',
     # auth-ldap.conf.ext
+    $userdb_ldap_name           = undef,
+    $passdb_ldap_name           = undef,
     $auth_ldap_userdb_static    = undef,
     $auth_master_separator      = '*',
     $mail_max_userip_connections = 512,
@@ -184,9 +186,13 @@ class dovecot (
     # Main configuration directory
     file { "${directory}":
         ensure => 'directory',
+        recurse => true,
+        purge  => true,
     }
     file { "${directory}/conf.d":
         ensure => 'directory',
+        recurse => true,
+        purge  => true,
     }
 
     # Main configuration file
@@ -200,6 +206,9 @@ class dovecot (
     }
     file { "${directory}/conf.d/10-director.conf":
         content => template('dovecot/conf.d/10-director.conf.erb'),
+    }
+    file { "${directory}/conf.d/10-tcpwrapper.conf":
+        content => template('dovecot/conf.d/10-tcpwrapper.conf.erb'),
     }
     file { "${directory}/conf.d/10-logging.conf":
         content => template('dovecot/conf.d/10-logging.conf.erb'),
@@ -230,8 +239,10 @@ class dovecot (
       file { "${directory}/conf.d/20-managesieve.conf":
           content => template('dovecot/conf.d/20-managesieve.conf.erb'),
       }
+      file { "${directory}/conf.d/90-sieve-extprograms.conf":
+          content => template('dovecot/conf.d/90-sieve-extprograms.conf.erb'),
+      }
     }
-    
     file { "${directory}/conf.d/90-sieve.conf":
         content => template('dovecot/conf.d/90-sieve.conf.erb'),
     }
@@ -247,8 +258,29 @@ class dovecot (
     file { "${directory}/conf.d/auth-sql.conf.ext" :
         content => template('dovecot/conf.d/auth-sql.conf.ext.erb'),
     }
-    file { '/etc/dovecot/conf.d/auth-ldap.conf.ext':
+    file { "${directory}/conf.d/auth-ldap.conf.ext":
         content => template('dovecot/conf.d/auth-ldap.conf.ext.erb'),
+    }
+    file { "${directory}/conf.d/auth-dict.conf.ext":
+        content => template('dovecot/conf.d/auth-dict.conf.ext.erb'),
+    }
+    file { "${directory}/conf.d/auth-static.conf.ext":
+        content => template('dovecot/conf.d/auth-static.conf.ext.erb'),
+    }
+    file { "${directory}/conf.d/auth-checkpassword.conf.ext":
+        content => template('dovecot/conf.d/auth-checkpassword.conf.ext.erb'),
+    }
+    file { "${directory}/conf.d/auth-deny.conf.ext":
+        content => template('dovecot/conf.d/auth-deny.conf.ext.erb'),
+    }
+    file { "${directory}/conf.d/auth-master.conf.ext":
+        content => template('dovecot/conf.d/auth-master.conf.ext.erb'),
+    }
+    file { "${directory}/conf.d/auth-system.conf.ext":
+        content => template('dovecot/conf.d/auth-system.conf.ext.erb'),
+    }
+    file { "${directory}/conf.d/auth-vpopmail.conf.ext":
+        content => template('dovecot/conf.d/auth-vpopmail.conf.ext.erb'),
     }
 }
 

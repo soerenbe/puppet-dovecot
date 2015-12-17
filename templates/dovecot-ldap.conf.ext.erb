@@ -1,0 +1,24 @@
+auth_bind = <%= @auth_bind %>
+<% if @uris -%>
+uris = <%= @uris %>
+<% end -%>
+<% if @base -%>
+base = <%= @base %>
+<% end -%>
+<% if @dn -%>
+dn = <%= @dn %>
+<% end -%>
+<% if @dnpass -%>
+dnpass = <%= @dnpass %>
+<% end -%>
+<% if @pass_filter -%>
+pass_filter = <%= @pass_filter %>
+<% end -%>
+<% if @user_filter -%>
+user_filter = <%= @user_filter %>
+<% end -%>
+<% if @pass_attrs -%>
+pass_attrs = <%= @pass_attrs %>
+<% end -%>
+ldap_version = <%= @ldap_version %>
+scope = <%= @scope %>
