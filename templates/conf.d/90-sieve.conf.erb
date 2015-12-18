@@ -15,9 +15,8 @@ plugin {
   # tool.
   #sieve_global_path = /var/lib/dovecot/sieve/default.sieve
 
-  # Directory for :personal include scripts for the include extension.
-  # DEPRECATED: Use sieve = file:~/sieve;active=~/.dovecot.sieve
-  # sieve_dir = <%= @sieve_dir %>
+  # Directory for :personal include scripts for the include extension. 
+  sieve_dir = <%= @sieve_dir %>
 
   # Directory for :global include scripts for the include extension. 
   #sieve_global_dir =
