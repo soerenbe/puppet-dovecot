@@ -89,10 +89,9 @@ class dovecot (
     # 20-managesieve.conf
     $manage_sieve               = undef,
     # 90-sieve.conf
-    $sieve                      = '~/.dovecot.sieve',
+    $sieve                      = 'file:~/sieve;active=~/.dovecot.sieve',
     $sieve_after                = undef,
     $sieve_before               = undef,
-    $sieve_dir                  = '~/sieve',
     $sieve_max_actions          = undef,
     $sieve_max_redirects        = undef,
     $sieve_max_script_size      = undef,
